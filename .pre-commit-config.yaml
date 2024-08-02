@@ -1,0 +1,50 @@
+---
+repos:
+  # General hooks section
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: (helm/.*/templates)|(updatecli.d/.*-manifest.ya?ml)
+      - id: check-json
+      - id: check-merge-conflict
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: end-of-file-fixer
+        exclude: README.md
+  # Helm hooks section (excluded in pre-commit-compose workflow)
+  - repo: https://github.com/norwoodj/helm-docs
+    rev: v1.11.0
+    hooks:
+      - id: helm-docs
+  - repo: https://github.com/Alfresco/alfresco-build-tools
+    rev: v2.1.0
+    hooks:
+      - id: helm-deps-build
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.23
+    hooks:
+      - id: helmlint
+  - repo: https://github.com/bridgecrewio/checkov.git
+    rev: 2.3.288
+    hooks:
+      - id: checkov
+        types: [yaml]
+        args:
+          - --quiet
+          - --compact
+          - --config-file
+          - .checkov.yaml
+  # Docker Compose hooks section (excluded in pre-commit-helm workflow)
+  - repo: https://github.com/IamTheFij/docker-pre-commit
+    rev: v2.1.1
+    hooks:
+      - id: docker-compose-check
+        exclude: override-docker-compose.yml
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.37.0
+    hooks:
+      - id: markdownlint
+        args: ["--ignore", "helm/**/README.md"]
